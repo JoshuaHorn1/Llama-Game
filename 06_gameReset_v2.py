@@ -1,6 +1,7 @@
-"""Game Reset Component - Version 1
-- Resets game variables if the user presses 'r' upon game over
-- Quits game if user presses 'x' upon game over
+"""Game Reset Component - Version 2
+- Fixed the bug where the llama would no longer be on the ground if the game was reset while the llama was jumping
+- Fixed end game screen
+- Fixed pressing 'x' to quit on end game screen
 """
 
 import pygame
@@ -92,8 +93,8 @@ while running:
                 cacti_delay_reset = 30
                 cacti_delay_counter = 0
                 cacti_force_spawn = 0
-            elif event.type == pygame.K_x and game_over:
-                pygame.quit()
+            if event.key == pygame.K_x and game_over:
+                running = False
 
     if not game_over:
         # Fill the screen with gray color
@@ -168,9 +169,15 @@ while running:
             if llama_rect.colliderect(cactus_rect):
                 game_over = True
                 game_over_font = pygame.font.Font(None, 150)
-                game_over_text = game_over_font.render("GAME OVER.\nPress 'r' to restart.", True, (255, 0, 0))
-                game_over_rect = game_over_text.get_rect(center=(screen_width // 2, screen_height // 3.5))
+                game_over_text = game_over_font.render("GAME OVER", True, (255, 50, 50))
+                game_restart_font = pygame.font.Font(None, 100)
+                game_restart_text = game_over_font.render("Press 'r' to restart,", True, (255, 50, 50))
+                game_quit_text = game_over_font.render("or press 'x' to quit.", True, (255, 50, 50))
+                game_over_rect = game_over_text.get_rect(center=(screen_width // 2, 200))
+                game_restart_rect = game_restart_text.get_rect(center=(screen_width // 2, 220))
+                game_quit_rect = game_quit_text.get_rect(center=(screen_width // 2, 240))
                 screen.blit(game_over_text, game_over_rect)
+                screen.blit(game_restart_text, game_restart_rect, game_quit_rect)
                 pygame.display.flip()
 
     pygame.display.flip()

@@ -1,6 +1,5 @@
-"""Game Reset Component - Version 2
-- Fixed the bug where the llama would no longer be on the ground if the game was reset while the llama was jumping (v1)
-- Fixed pressing 'x' to quit on end game screen
+"""Game Reset Component - Version 4
+- Fixed game over screen
 """
 
 import pygame
@@ -162,21 +161,23 @@ while running:
             if llama_rect.colliderect(cactus_rect):
                 game_over = True
                 game_over_font = pygame.font.Font(None, 150)
-                game_over_text = game_over_font.render("GAME OVER", True, (255, 50, 50))
-                game_restart_font = pygame.font.Font(None, 100)
-                game_restart_text = game_over_font.render("Press 'r' to restart,", True, (255, 50, 50))
-                game_quit_text = game_over_font.render("or press 'x' to quit.", True, (255, 50, 50))
-                game_over_rect = game_over_text.get_rect(center=(screen_width // 2, 200))
-                game_restart_rect = game_restart_text.get_rect(center=(screen_width // 2, 220))
-                game_quit_rect = game_quit_text.get_rect(center=(screen_width // 2, 240))
+                game_over_text = game_over_font.render("~~ GAME OVER! ~~", True, (180, 50, 50))
+                game_restart_font = pygame.font.Font(None, 80)
+                game_restart_text = game_over_font.render("Press 'r' to restart,", True, (180, 50, 50))
+                game_quit_text = game_over_font.render("or press 'x' to quit.", True, (180, 50, 50))
+                game_over_rect = game_over_text.get_rect(center=(screen_width // 2, 150))
+                game_restart_rect = game_restart_text.get_rect(center=(screen_width // 2, 350))
+                game_quit_rect = game_quit_text.get_rect(center=(screen_width // 2, 450))
                 screen.blit(game_over_text, game_over_rect)
-                screen.blit(game_restart_text, game_restart_rect, game_quit_rect)
+                screen.blit(game_restart_text, game_restart_rect)
+                screen.blit(game_quit_text, game_quit_rect)
                 pygame.display.flip()
 
     if resetting_game:  # checks if the game is being reset, then resets variables if yes
         cacti = []
         x_position = 100
-        y_position = 558
+        y_position = 558  # Reset y-position to the ground level
+        jumping = False  # Reset jumping status
         speed = 5
         speed_counter = 0
         cacti_delay_reset = 30

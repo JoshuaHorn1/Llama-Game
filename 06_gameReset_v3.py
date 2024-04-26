@@ -1,6 +1,5 @@
-"""Game Reset Component - Version 2
-- Fixed the bug where the llama would no longer be on the ground if the game was reset while the llama was jumping (v1)
-- Fixed pressing 'x' to quit on end game screen
+"""Game Reset Component - Version 3
+- Fixed the bug where the llama would no longer be on the ground if the game was reset while the llama was jumping (v2)
 """
 
 import pygame
@@ -176,7 +175,8 @@ while running:
     if resetting_game:  # checks if the game is being reset, then resets variables if yes
         cacti = []
         x_position = 100
-        y_position = 558
+        y_position = 558  # Reset y-position to the ground level
+        jumping = False  # Reset jumping status
         speed = 5
         speed_counter = 0
         cacti_delay_reset = 30

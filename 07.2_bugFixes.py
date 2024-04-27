@@ -1,4 +1,7 @@
-"""Bug Fixes
+"""Bug Fixes No.02
+- Changed score and game over text colour
+- Changed score, game over, and game restart fonts
+- Added a speed display
 """
 
 import pygame
@@ -31,9 +34,16 @@ screen_height = 720
 screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption("The Adventures of Lloyd")
 
-# Define the gray color (optional)
+# Colour Tuples
 GREY_TUPLE = (200, 200, 200)
 LIGHT_GREY_TUPLE = (250, 250, 250)
+SCORE_TEXT_COLOUR = (50, 50, 50)
+GAME_OVER_TEXT_COLOUR = (150, 150, 150)
+
+# Fonts
+SCORE_FONT = pygame.font.SysFont('couriernew', 30)
+GAME_OVER_FONT = pygame.font.SysFont('chiller', 150)
+GAME_RESTART_FONT = pygame.font.SysFont('copperplategothic', 80)
 
 # Load the floor image
 floor_image = pygame.image.load("ground.png")
@@ -100,13 +110,23 @@ while running:
         display_score = "{:06d}".format(score)
 
         # Display score on the screen
-        font = pygame.font.Font(None, 36)
-        score_text = font.render("Score:", True, (50, 180, 50))
-        score_value_text = font.render(f"{display_score}", True, (50, 180, 50))
-        score_rect = score_text.get_rect(center=(50, 20))
-        score_value_rect = score_value_text.get_rect(center=(50, 50))
+        score_text = SCORE_FONT.render(f"Score: {display_score}", True, SCORE_TEXT_COLOUR)
+        score_rect = score_text.get_rect(center=(125, 20))
         screen.blit(score_text, score_rect)
-        screen.blit(score_value_text, score_value_rect)
+
+        # Incrementally increases cactus speed
+        speed_counter += 1
+        if speed_counter == 600:
+            speed += 0.2
+            cacti_delay_reset -= 1
+
+        # Format the speed to 3 digits
+        display_speed = "{:0.1f}".format(speed).zfill(4)
+
+        # Display the speed on the screen
+        speed_text = SCORE_FONT.render(f"Effective Speed: {display_speed}", True, SCORE_TEXT_COLOUR)
+        speed_rect = speed_text.get_rect(center=(885, 20))
+        screen.blit(speed_text, speed_rect)
 
         # Calculate how many times to repeat the floor image
         num_tiles = int(screen_width / floor_width) + 1  # Add 1 to ensure complete coverage
@@ -135,12 +155,6 @@ while running:
                 y_velocity = JUMP_HEIGHT
             screen.blit(LLAMA_JUMP, (x_position, y_position))
 
-        # Incrementally increases cactus speed
-        speed_counter += 1
-        if speed_counter == 600:
-            speed += 0.2
-            cacti_delay_reset -= 1
-
         # Generate a new cactus after a random time interval
         cacti_delay_counter += 1
         if cacti_delay_counter >= cacti_delay_reset:  # check if a cacti has been placed recently
@@ -168,7 +182,7 @@ while running:
             screen.blit(cactus.image, (cactus.cactus_x, cactus.cactus_y))
 
             # Custom bounding box for cactus
-            cactus_rect = pygame.Rect(cactus.cactus_x + 10, cactus.cactus_y + 10,
+            cactus_rect = pygame.Rect(cactus.cactus_x, cactus.cactus_y,
                                       cactus.image.get_width(), cactus.image.get_height())
 
             # Custom bounding box for llama
@@ -176,11 +190,11 @@ while running:
 
             if llama_rect.colliderect(cactus_rect):
                 game_over = True
-                game_over_font = pygame.font.Font(None, 150)
-                game_over_text = game_over_font.render("~~ GAME OVER! ~~", True, (180, 50, 50))
-                game_restart_font = pygame.font.Font(None, 80)
-                game_restart_text = game_over_font.render("Press 'r' to restart,", True, (180, 50, 50))
-                game_quit_text = game_over_font.render("or press 'x' to quit.", True, (180, 50, 50))
+                game_over_text = GAME_OVER_FONT.render("GAME OVER!", True, GAME_OVER_TEXT_COLOUR)
+                game_restart_text = GAME_RESTART_FONT.render("Press 'r' to restart,",
+                                                             True, GAME_OVER_TEXT_COLOUR)
+                game_quit_text = GAME_RESTART_FONT.render("or press 'x' to quit.",
+                                                          True, GAME_OVER_TEXT_COLOUR)
                 game_over_rect = game_over_text.get_rect(center=(screen_width // 2, 150))
                 game_restart_rect = game_restart_text.get_rect(center=(screen_width // 2, 350))
                 game_quit_rect = game_quit_text.get_rect(center=(screen_width // 2, 450))
@@ -191,10 +205,13 @@ while running:
         pygame.display.flip()
 
     if resetting_game:  # checks if the game is being reset, then resets variables if yes
-        cacti = []
+        jumping = False
         x_position = 100
-        y_position = 558  # Reset y-position to the ground level
-        jumping = False  # Reset jumping status
+        y_position = 558
+        animation_tick_count = 0
+        current_frame = LLAMA_RUN1
+        y_velocity = JUMP_HEIGHT
+        cacti = []
         speed = 5
         speed_counter = 0
         cacti_delay_reset = 30

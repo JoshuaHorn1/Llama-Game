@@ -25,7 +25,7 @@ class Cactus:
         self.cactus_x -= self.speed
 
 
-# MAIN LOOP...
+# MAIN PROGRAM...
 # Set the screen size and caption
 CLOCK = pygame.time.Clock()
 screen_width = 1080

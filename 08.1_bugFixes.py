@@ -1,6 +1,5 @@
 """Bug Fixes No.03
-- Fixed speed only increasing once then breaking
-- Changed the speed to increase by .5 every 500 score
+- Fixed hitboxes of collosions from 07.3_bugFixes.py
 """
 
 # IMPORTS...
@@ -186,7 +185,7 @@ while running:
                                       cactus.image.get_width(), cactus.image.get_height())
 
             # Custom bounding box for llama
-            llama_rect = pygame.Rect(x_position, y_position, 80, 80)
+            llama_rect = pygame.Rect(x_position + 24, y_position, 42, 75)
 
             if llama_rect.colliderect(cactus_rect):
                 game_over = True

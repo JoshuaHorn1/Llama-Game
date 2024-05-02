@@ -1,6 +1,4 @@
-"""Bug Fixes No.03
-- Fixed speed only increasing once then breaking
-- Changed the speed to increase by .5 every 500 score
+"""Sprite Collision Component - Version 2
 """
 
 # IMPORTS...
@@ -24,8 +22,29 @@ class Cactus:
                                                          int(self.image.get_height() * scale)))
         self.rect = self.image.get_rect()
 
+    def __getitem__(self, index):
+        if index == 0:
+            return self.scale
+        else:
+            raise IndexError("Invalid index for Cactus")
+
     def move(self):
         self.cactus_x -= self.speed
+
+
+# FUNCTIONS...
+def check_collision(llama_mask, cacti):
+    for cactus in cacti:
+        cactus_image = cactus.image  # Assuming image is stored in the Cactus class
+        cactus_scale = cactus[0]  # Assuming cactus_scale is the first element
+        scaled_width = int(cactus.image.get_width() * cactus_scale)
+        scaled_height = int(cactus.image.get_height() * cactus_scale)
+        cactus_mask = pygame.mask.from_surface(pygame.transform.scale(cactus_image,
+                                                                      (scaled_width, scaled_height)))
+        overlap = pygame.sprite.collide_mask(llama_mask, cactus_mask)
+        if overlap:
+            return True  # Collision detected
+    return False  # No collision
 
 
 # MAIN PROGRAM...
@@ -72,6 +91,7 @@ cacti = []  # a list to hold the different cactus variables
 CACTI_SIZE_1 = 620  # lists holding the different y positions for generating the cacti
 CACTI_SIZE_2 = 608
 CACTI_SIZE_3 = 594
+cacti_image = pygame.image.load("cactus.png")
 speed = 5  # movement speed of cacti objects
 speed_counter = 0
 cacti_delay_reset = 30  # a value that the counter must reach for a new cacti to spawn
@@ -80,6 +100,9 @@ cacti_force_spawn = 0
 
 # User scoring variable
 score = 0  # a variable to store the user's score
+
+# Gets Llama sprite mask
+llama_mask = pygame.mask.from_surface(LLAMA_JUMP)
 
 # Game loop:
 running = True
@@ -182,13 +205,22 @@ while running:
             screen.blit(cactus.image, (cactus.cactus_x, cactus.cactus_y))
 
             # Custom bounding box for cactus
-            cactus_rect = pygame.Rect(cactus.cactus_x, cactus.cactus_y,
-                                      cactus.image.get_width(), cactus.image.get_height())
+            # cactus_rect = pygame.Rect(cactus.cactus_x, cactus.cactus_y,
+            #                           cactus.image.get_width(), cactus.image.get_height())
+
+            # cactus_image = cactus.image  # Assuming image is stored in the Cactus class
+            # cactus_scale = cactus[0]  # Assuming cactus_scale is the first element
+            # scaled_width = int(cactus.image.get_width() * cactus_scale)
+            # scaled_height = int(cactus.image.get_height() * cactus_scale)
+            # cactus_mask = pygame.mask.from_surface(pygame.transform.scale(cactus_image,
+            #                                                               (scaled_width, scaled_height)))
 
             # Custom bounding box for llama
-            llama_rect = pygame.Rect(x_position, y_position, 80, 80)
+            llama_rect = pygame.Rect(x_position + 5, y_position, 70, 80)
 
-            if llama_rect.colliderect(cactus_rect):
+            # if llama_rect.colliderect(cactus_rect):
+            collision_detected = check_collision(llama_mask, cacti)
+            if collision_detected:
                 game_over = True
                 game_over_text = GAME_OVER_FONT.render("GAME OVER!", True, GAME_OVER_TEXT_COLOUR)
                 game_restart_text = GAME_RESTART_FONT.render("Press 'r' to restart,",

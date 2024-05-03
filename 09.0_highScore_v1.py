@@ -1,5 +1,6 @@
-"""Bug Fixes No.04
-- Fixed hitboxes of collisions from 07.3_bugFixes.py
+"""High Score Component - Version 1
+- Added save_high_score() and _load_high_score() functions
+- Added a highscore variable, and a checker to constantly save the highscore.
 """
 
 # IMPORTS...
@@ -11,7 +12,7 @@ pygame.init()
 
 
 # CLASSES...
-class Cactus:
+class Cactus:  # cactus class
     def __init__(self, scale, cactus_x, cactus_y, speed):
         self.scale = scale
         self.cactus_x = cactus_x
@@ -25,6 +26,20 @@ class Cactus:
 
     def move(self):
         self.cactus_x -= self.speed
+
+
+# FUNCTIONS...
+def load_high_score():  # function to load the high score from file
+    try:
+        with open("high_score.txt", "r") as file:
+            return int(file.read())
+    except FileNotFoundError:
+        return 0
+
+
+def save_high_score(high_score):  # Function to save the high score to file
+    with open("high_score.txt", "w") as file:
+        file.write(str(high_score))
 
 
 # MAIN PROGRAM...
@@ -80,6 +95,9 @@ cacti_force_spawn = 0
 # User scoring variable
 score = 0  # a variable to store the user's score
 
+# Load the highscore
+high_score = load_high_score()
+
 # Game loop:
 running = True
 game_over = False
@@ -104,6 +122,11 @@ while running:
         # Update score and speed counter
         score += 1
         speed_counter += 1
+
+        if score > high_score:  # constantly checks for a new highscore
+            high_score = score
+            # Save the new high score
+            save_high_score(high_score)
 
         # Format the score to 6 digits
         display_score = "{:06d}".format(score)

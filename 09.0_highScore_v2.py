@@ -1,5 +1,6 @@
-"""Bug Fixes No.04
-- Fixed hitboxes of collisions from 07.3_bugFixes.py
+"""High Score Component - Version 2
+- Reformatted the score display
+- Display highscore
 """
 
 # IMPORTS...
@@ -11,7 +12,7 @@ pygame.init()
 
 
 # CLASSES...
-class Cactus:
+class Cactus:  # cactus class
     def __init__(self, scale, cactus_x, cactus_y, speed):
         self.scale = scale
         self.cactus_x = cactus_x
@@ -25,6 +26,20 @@ class Cactus:
 
     def move(self):
         self.cactus_x -= self.speed
+
+
+# FUNCTIONS...
+def load_high_score():  # function to load the high score from file
+    try:
+        with open("high_score.txt", "r") as file:
+            return int(file.read())
+    except FileNotFoundError:
+        return 0
+
+
+def save_high_score(high_score):  # Function to save the high score to file
+    with open("high_score.txt", "w") as file:
+        file.write(str(high_score))
 
 
 # MAIN PROGRAM...
@@ -42,7 +57,7 @@ SCORE_TEXT_COLOUR = (50, 50, 50)
 GAME_OVER_TEXT_COLOUR = (150, 150, 150)
 
 # Fonts
-SCORE_FONT = pygame.font.SysFont('couriernew', 30)
+SCORE_FONT = pygame.font.SysFont('couriernew', 26)
 GAME_OVER_FONT = pygame.font.SysFont('chiller', 150)
 GAME_RESTART_FONT = pygame.font.SysFont('copperplategothic', 80)
 
@@ -80,6 +95,9 @@ cacti_force_spawn = 0
 # User scoring variable
 score = 0  # a variable to store the user's score
 
+# Load the highscore
+high_score = load_high_score()
+
 # Game loop:
 running = True
 game_over = False
@@ -105,13 +123,22 @@ while running:
         score += 1
         speed_counter += 1
 
+        if score > high_score:  # constantly checks for a new highscore
+            high_score = score
+            # Save the new high score
+            save_high_score(high_score)
+
         # Format the score to 6 digits
         display_score = "{:06d}".format(score)
+        display_highscore = "{:06d}".format(high_score)
 
         # Display score on the screen
         score_text = SCORE_FONT.render(f"Score: {display_score}", True, SCORE_TEXT_COLOUR)
-        score_rect = score_text.get_rect(center=(125, 20))
+        highscore_text = SCORE_FONT.render(f"High:  {display_highscore}", True, SCORE_TEXT_COLOUR)
+        score_rect = score_text.get_rect(center=(114, 20))
+        highscore_rect = highscore_text.get_rect(center=(114, 50))
         screen.blit(score_text, score_rect)
+        screen.blit(highscore_text, highscore_rect)
 
         # Incrementally increases cactus speed relative to the score
         if speed_counter == 500:
@@ -123,8 +150,8 @@ while running:
         display_speed = "{:0.1f}".format(speed).zfill(4)
 
         # Display the speed on the screen
-        speed_text = SCORE_FONT.render(f"Effective Speed: {display_speed}", True, SCORE_TEXT_COLOUR)
-        speed_rect = speed_text.get_rect(center=(885, 20))
+        speed_text = SCORE_FONT.render(f"Speed: {display_speed}", True, SCORE_TEXT_COLOUR)
+        speed_rect = speed_text.get_rect(center=(984, 20))
         screen.blit(speed_text, speed_rect)
 
         # Calculate how many times to repeat the floor image

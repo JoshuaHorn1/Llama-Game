@@ -1,5 +1,5 @@
-"""Bug Fixes No.04
-- Fixed hitboxes of collisions from 07.3_bugFixes.py
+"""Bug Fixes No.06
+- Fixed a glitch where the speed update can cause cacti to be travelling at different speeds
 """
 
 # IMPORTS...
@@ -11,7 +11,7 @@ pygame.init()
 
 
 # CLASSES...
-class Cactus:
+class Cactus:  # cactus class
     def __init__(self, scale, cactus_x, cactus_y, speed):
         self.scale = scale
         self.cactus_x = cactus_x
@@ -25,6 +25,23 @@ class Cactus:
 
     def move(self):
         self.cactus_x -= self.speed
+
+    def update_speed(self, new_speed):
+        self.speed = new_speed
+
+
+# FUNCTIONS...
+def load_high_score():  # function to load the high score from file
+    try:
+        with open("high_score.txt", "r") as file:
+            return int(file.read())
+    except FileNotFoundError:
+        return 0
+
+
+def save_high_score(high_score):  # Function to save the high score to file
+    with open("high_score.txt", "w") as file:
+        file.write(str(high_score))
 
 
 # MAIN PROGRAM...
@@ -42,7 +59,7 @@ SCORE_TEXT_COLOUR = (50, 50, 50)
 GAME_OVER_TEXT_COLOUR = (150, 150, 150)
 
 # Fonts
-SCORE_FONT = pygame.font.SysFont('couriernew', 30)
+SCORE_FONT = pygame.font.SysFont('couriernew', 26)
 GAME_OVER_FONT = pygame.font.SysFont('chiller', 150)
 GAME_RESTART_FONT = pygame.font.SysFont('copperplategothic', 80)
 
@@ -76,9 +93,11 @@ speed_counter = 0
 cacti_delay_reset = 30  # a value that the counter must reach for a new cacti to spawn
 cacti_delay_counter = 0  # cacti counter
 cacti_force_spawn = 0
+spawn_rate = 600
 
-# User scoring variable
+# Score variables
 score = 0  # a variable to store the user's score
+high_score = load_high_score()  # loads the highscore
 
 # Game loop:
 running = True
@@ -105,26 +124,40 @@ while running:
         score += 1
         speed_counter += 1
 
+        if score > high_score:  # constantly checks for a new highscore
+            high_score = score
+            # Save the new high score
+            save_high_score(high_score)
+
         # Format the score to 6 digits
         display_score = "{:06d}".format(score)
+        display_highscore = "{:06d}".format(high_score)
 
         # Display score on the screen
         score_text = SCORE_FONT.render(f"Score: {display_score}", True, SCORE_TEXT_COLOUR)
-        score_rect = score_text.get_rect(center=(125, 20))
+        highscore_text = SCORE_FONT.render(f"High:  {display_highscore}", True, SCORE_TEXT_COLOUR)
+        score_rect = score_text.get_rect(center=(114, 20))
+        highscore_rect = highscore_text.get_rect(center=(114, 50))
         screen.blit(score_text, score_rect)
+        screen.blit(highscore_text, highscore_rect)
 
         # Incrementally increases cactus speed relative to the score
         if speed_counter == 500:
             speed_counter = 0
             speed += 0.5
+            # Update speed for all existing cacti
+            for cactus in cacti:
+                cactus.update_speed(speed)
             cacti_delay_reset -= 1
+            if spawn_rate >= 200:  # limits the spawn rate of the cacti
+                spawn_rate -= 10
 
         # Format the speed to 3 digits
         display_speed = "{:0.1f}".format(speed).zfill(4)
 
         # Display the speed on the screen
-        speed_text = SCORE_FONT.render(f"Effective Speed: {display_speed}", True, SCORE_TEXT_COLOUR)
-        speed_rect = speed_text.get_rect(center=(885, 20))
+        speed_text = SCORE_FONT.render(f"Speed: {display_speed}", True, SCORE_TEXT_COLOUR)
+        speed_rect = speed_text.get_rect(center=(984, 20))
         screen.blit(speed_text, speed_rect)
 
         # Calculate how many times to repeat the floor image
@@ -157,8 +190,8 @@ while running:
         # Generate a new cactus after a random time interval
         cacti_delay_counter += 1
         if cacti_delay_counter >= cacti_delay_reset:  # check if a cacti has been placed recently
-            # Generates random chance for cacti to spawn, or forces one to spawn if it has been 300 ticks without one
-            if random.randint(0, 600) < 2 or cacti_force_spawn == 180:
+            # Generates random chance for cacti to spawn, or forces one to spawn if it has been 150 ticks without one
+            if random.randint(0, spawn_rate) < 3 or cacti_force_spawn == 150:
                 cacti_force_spawn = 0
                 cacti_delay_counter = 0
                 cactus_scale = random.randint(1, 3)  # Random scale
@@ -216,6 +249,7 @@ while running:
         cacti_delay_reset = 30
         cacti_delay_counter = 0
         cacti_force_spawn = 0
+        spawn_rate = 600
         score = 0
         resetting_game = False
 

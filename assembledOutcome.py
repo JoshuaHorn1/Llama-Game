@@ -55,7 +55,7 @@ def welcome_screen():
 
         # Set the welcome text using the welcome font
         welcome_text_1 = WELCOME_FONT.render("Press >SPACEBAR< to Jump!", True, SCORE_TEXT_COLOUR)
-        welcome_text_2 = WELCOME_FONT.render("Presss >ENTER< to start!", True, SCORE_TEXT_COLOUR)
+        welcome_text_2 = WELCOME_FONT.render("Press >ENTER< to Start!", True, SCORE_TEXT_COLOUR)
         welcome_rect_1 = welcome_text_1.get_rect(center=(screen_width // 2, screen_height // 2 - 120))
         welcome_rect_2 = welcome_text_2.get_rect(center=(screen_width // 2, screen_height // 2 - 50))
         screen.blit(welcome_text_1, welcome_rect_1)
@@ -192,7 +192,7 @@ while running:
                 cactus.update_speed(speed)
             cacti_delay_reset -= 1
             if spawn_rate >= 200:  # limits the spawn rate of the cacti
-                spawn_rate -= 10
+                spawn_rate -= 50
 
         # Format the speed to 3 digits
         display_speed = "{:0.1f}".format(speed).zfill(4)

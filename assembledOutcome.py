@@ -18,8 +18,11 @@ class Cactus:  # cactus class
         self.speed = speed
         self.image = pygame.image.load("cactus.png")
         # Adjust image size based on scale
-        self.image = pygame.transform.scale(self.image, (int(self.image.get_width() * scale),
-                                                         int(self.image.get_height() * scale)))
+        self.image = pygame.transform.scale(self.image,
+                                            (int(self.image.get_width()
+                                                 * scale),
+                                             int(self.image.get_height()
+                                                 * scale)))
         self.rect = self.image.get_rect()
 
     def move(self):
@@ -31,6 +34,7 @@ class Cactus:  # cactus class
 
 # FUNCTIONS...
 
+
 def welcome_screen():
     welcome = True
     while welcome:
@@ -39,25 +43,35 @@ def welcome_screen():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 quit()
-            if event.type == pygame.KEYDOWN:  # Check if it's a key press event
-                if event.key == pygame.K_RETURN:  # Check if Enter key is pressed
+            # Check if it's a key press event
+            if event.type == pygame.KEYDOWN:
+                # Check if Enter key is pressed
+                if event.key == pygame.K_RETURN:
                     welcome = False
 
         # Fill the screen with gray color
         screen.fill(LIGHT_GREY_TUPLE)
 
         # Calculate how many times to repeat the floor image
-        num_tiles = int(screen_width / floor_width) + 1  # Add 1 to ensure complete coverage
+        # Add 1 to ensure complete coverage
+        num_tiles = int(screen_width / floor_width) + 1
 
         # Draw the floor by repeating the image
         for i in range(num_tiles):
-            screen.blit(floor_image, (i * floor_width, screen_height - floor_image.get_height()))
+            screen.blit(floor_image, (i * floor_width, screen_height -
+                                      floor_image.get_height()))
 
         # Set the welcome text using the welcome font
-        welcome_text_1 = WELCOME_FONT.render("Press >SPACEBAR< to Jump!", True, SCORE_TEXT_COLOUR)
-        welcome_text_2 = WELCOME_FONT.render("Press >ENTER< to Start!", True, SCORE_TEXT_COLOUR)
-        welcome_rect_1 = welcome_text_1.get_rect(center=(screen_width // 2, screen_height // 2 - 120))
-        welcome_rect_2 = welcome_text_2.get_rect(center=(screen_width // 2, screen_height // 2 - 50))
+        welcome_text_1 = WELCOME_FONT.render("Press >SPACEBAR< to Jump!",
+                                             True, SCORE_TEXT_COLOUR)
+        welcome_text_2 = WELCOME_FONT.render("Press >ENTER< to Start!",
+                                             True, SCORE_TEXT_COLOUR)
+        welcome_rect_1 = welcome_text_1.get_rect(center=(screen_width // 2,
+                                                         screen_height //
+                                                         2 - 120))
+        welcome_rect_2 = welcome_text_2.get_rect(center=(screen_width // 2,
+                                                         screen_height //
+                                                         2 - 50))
         screen.blit(welcome_text_1, welcome_rect_1)
         screen.blit(welcome_text_2, welcome_rect_2)
 
@@ -77,7 +91,7 @@ def load_high_score():  # function to load the high score from file
         return 0
 
 
-def save_high_score(high_score):  # Function to save the high score to file
+def save_high_score(high_score):  # function to save the high score to file
     with open("high_score.txt", "w") as file:
         file.write(str(high_score))
 
@@ -104,14 +118,17 @@ GAME_OVER_FONT = pygame.font.SysFont('chiller', 150)
 GAME_RESTART_FONT = pygame.font.SysFont('copperplategothic', 80)
 WELCOME_FONT = pygame.font.SysFont('consolas', 75)
 
-# FLoor image variables
+# Floor image variables
 floor_image = pygame.image.load("ground.png")  # load floor image
 floor_width = floor_image.get_width()  # get floor width
 
 # Llama animation frames
-LLAMA_JUMP = pygame.transform.scale(pygame.image.load("Llama.png"), (100, 100))
-LLAMA_RUN1 = pygame.transform.scale(pygame.image.load("Llama2.png"), (100, 100))
-LLAMA_RUN2 = pygame.transform.scale(pygame.image.load("Llama3.png"), (100, 100))
+LLAMA_JUMP = pygame.transform.scale(pygame.image.load("Llama.png"),
+                                    (100, 100))
+LLAMA_RUN1 = pygame.transform.scale(pygame.image.load("Llama2.png"),
+                                    (100, 100))
+LLAMA_RUN2 = pygame.transform.scale(pygame.image.load("Llama3.png"),
+                                    (100, 100))
 jumping = False
 
 # Llama positions and variables
@@ -126,12 +143,12 @@ y_velocity = JUMP_HEIGHT
 
 # Cacti list and variables
 cacti = []  # a list to hold the different cactus variables
-CACTI_SIZE_1 = 620  # lists holding the different y positions for generating the cacti
+CACTI_SIZE_1 = 620  # lists holding the y positions for generating cacti
 CACTI_SIZE_2 = 608
 CACTI_SIZE_3 = 594
 speed = 5  # movement speed of cacti objects
 speed_counter = 0
-cacti_delay_reset = 30  # a value that the counter must reach for a new cacti to spawn
+cacti_delay_reset = 30  # value that counter must reach to spawn new cacti
 cacti_delay_counter = 0  # cacti counter
 cacti_force_spawn = 0
 spawn_rate = 600
@@ -176,8 +193,10 @@ while running:
         display_highscore = "{:06d}".format(high_score)
 
         # Display score on the screen
-        score_text = SCORE_FONT.render(f"Score: {display_score}", True, SCORE_TEXT_COLOUR)
-        highscore_text = SCORE_FONT.render(f"High:  {display_highscore}", True, SCORE_TEXT_COLOUR)
+        score_text = SCORE_FONT.render(f"Score: {display_score}",
+                                       True, SCORE_TEXT_COLOUR)
+        highscore_text = SCORE_FONT.render(f"High:  {display_highscore}",
+                                           True, SCORE_TEXT_COLOUR)
         score_rect = score_text.get_rect(center=(114, 20))
         highscore_rect = highscore_text.get_rect(center=(114, 50))
         screen.blit(score_text, score_rect)
@@ -198,29 +217,34 @@ while running:
         display_speed = "{:0.1f}".format(speed).zfill(4)
 
         # Display the speed on the screen
-        speed_text = SCORE_FONT.render(f"Speed: {display_speed}", True, SCORE_TEXT_COLOUR)
+        speed_text = SCORE_FONT.render(f"Speed: {display_speed}",
+                                       True, SCORE_TEXT_COLOUR)
         speed_rect = speed_text.get_rect(center=(984, 20))
         screen.blit(speed_text, speed_rect)
 
         # Calculate how many times to repeat the floor image
-        num_tiles = int(screen_width / floor_width) + 1  # Add 1 to ensure complete coverage
+        # Add 1 to ensure complete coverage
+        num_tiles = int(screen_width / floor_width) + 1
 
         # Draw the floor by repeating the image
         for i in range(num_tiles):
-            screen.blit(floor_image, (i * floor_width, screen_height - floor_image.get_height()))
+            screen.blit(floor_image, (i * floor_width, screen_height -
+                                      floor_image.get_height()))
 
         keys_pressed = pygame.key.get_pressed()
         if keys_pressed[pygame.K_SPACE]:
             jumping = True
 
         if not jumping:
-            animation_tick_count += 1  # Increment tick counter
+            animation_tick_count += 1  # increment tick counter
             # Always blit the current frame, even on non-update ticks:
             screen.blit(current_frame, (x_position, y_position))
-            if animation_tick_count >= 10:  # Check if it's time to update the frame
-                animation_tick_count = 0  # Reset counter
+            # Check if it's time to update the frame
+            if animation_tick_count >= 10:
+                animation_tick_count = 0  # reset counter
                 # Switch to the other animation frame:
-                current_frame = LLAMA_RUN2 if current_frame == LLAMA_RUN1 else LLAMA_RUN1
+                current_frame = LLAMA_RUN2 if current_frame == LLAMA_RUN1 \
+                    else LLAMA_RUN1
         else:
             y_position -= y_velocity
             y_velocity -= Y_GRAVITY
@@ -231,12 +255,15 @@ while running:
 
         # Generate a new cactus after a random time interval
         cacti_delay_counter += 1
-        if cacti_delay_counter >= cacti_delay_reset:  # check if a cacti has been placed recently
-            # Generates random chance for cacti to spawn, or forces one to spawn if it has been 150 ticks without one
-            if random.randint(0, spawn_rate) < 3 or cacti_force_spawn == 150:
+        # Check if a cacti has been placed recently
+        if cacti_delay_counter >= cacti_delay_reset:
+            # Generates random chance for cacti to spawn,
+            # or forces one to spawn if it has been 150 ticks without one
+            if (random.randint(0, spawn_rate) < 3 or
+                    cacti_force_spawn == 150):
                 cacti_force_spawn = 0
                 cacti_delay_counter = 0
-                cactus_scale = random.randint(1, 3)  # Random scale
+                cactus_scale = random.randint(1, 3)  # random scale
                 if cactus_scale == 1:
                     cactus_y = CACTI_SIZE_1
                     cactus_scale = 1.2
@@ -246,7 +273,8 @@ while running:
                 else:
                     cactus_y = CACTI_SIZE_3
                     cactus_scale = 2
-                cacti.append(Cactus(cactus_scale, screen_width, cactus_y, speed))
+                cacti.append(Cactus(cactus_scale, screen_width,
+                                    cactus_y, speed))
             else:
                 cacti_force_spawn += 1  # adds 1 to counter
 
@@ -257,28 +285,36 @@ while running:
 
             # Custom bounding box for cactus
             cactus_rect = pygame.Rect(cactus.cactus_x, cactus.cactus_y,
-                                      cactus.image.get_width(), cactus.image.get_height())
+                                      cactus.image.get_width(),
+                                      cactus.image.get_height())
 
             # Custom bounding box for llama
             llama_rect = pygame.Rect(x_position + 24, y_position, 42, 75)
 
             if llama_rect.colliderect(cactus_rect):
                 game_over = True
-                game_over_text = GAME_OVER_FONT.render("GAME OVER!", True, GAME_OVER_TEXT_COLOUR)
-                game_restart_text = GAME_RESTART_FONT.render("Press 'r' to restart,",
-                                                             True, GAME_OVER_TEXT_COLOUR)
-                game_quit_text = GAME_RESTART_FONT.render("or press 'x' to quit.",
-                                                          True, GAME_OVER_TEXT_COLOUR)
-                game_over_rect = game_over_text.get_rect(center=(screen_width // 2, 150))
-                game_restart_rect = game_restart_text.get_rect(center=(screen_width // 2, 350))
-                game_quit_rect = game_quit_text.get_rect(center=(screen_width // 2, 450))
+                game_over_text = GAME_OVER_FONT.render("GAME OVER!",
+                                                       True,
+                                                       GAME_OVER_TEXT_COLOUR)
+                game_restart_text = GAME_RESTART_FONT.render(
+                    "Press 'r' to restart,",
+                    True, GAME_OVER_TEXT_COLOUR)
+                game_quit_text = GAME_RESTART_FONT.render(
+                    "or press 'x' to quit.",
+                    True, GAME_OVER_TEXT_COLOUR)
+                game_over_rect = game_over_text.get_rect(
+                    center=(screen_width // 2, 150))
+                game_restart_rect = game_restart_text.get_rect(
+                    center=(screen_width // 2, 350))
+                game_quit_rect = game_quit_text.get_rect(
+                    center=(screen_width // 2, 450))
                 screen.blit(game_over_text, game_over_rect)
                 screen.blit(game_restart_text, game_restart_rect)
                 screen.blit(game_quit_text, game_quit_rect)
 
         pygame.display.flip()
 
-    if resetting_game:  # checks if the game is being reset, then resets variables if yes
+    if resetting_game:  # checks if the game is being reset
         jumping = False
         x_position = 100
         y_position = 558
